@@ -19,6 +19,7 @@ func NewRouter() *gin.Engine {
     })
 
     routes.RegisterProjectRoutes(api)
+    routes.RegisterAIJobRoutes(api)
 
     api.POST("/ai/story/generate", func(c *gin.Context) {
         var req struct {
@@ -46,6 +47,19 @@ func NewRouter() *gin.Engine {
         }
 
         result := service.NewAIService().GenerateShot(req.Prompt)
+        c.JSON(http.StatusOK, gin.H{"data": result})
+    })
+
+    api.POST("/ai/video/generate", func(c *gin.Context) {
+        var req struct {
+            Prompt string `json:"prompt"`
+        }
+        if err := c.ShouldBindJSON(&req); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+
+        result := service.NewAIService().GenerateVideo(req.Prompt)
         c.JSON(http.StatusOK, gin.H{"data": result})
     })
 
