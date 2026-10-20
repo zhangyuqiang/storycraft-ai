@@ -15,6 +15,7 @@
         <div class="meta">
           <span>{{ project.status }}</span>
           <span>{{ project.chapters }} chapters</span>
+          <RouterLink :to="`/projects/${project.id}`" class="detail-link">Open</RouterLink>
         </div>
       </div>
     </div>
@@ -22,6 +23,8 @@
 </template>
 
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
 const projects = [
   { id: 1, title: 'Moonfall City', genre: 'Fantasy', summary: 'An exiled guardian is drawn into a forgotten eclipse prophecy.', status: 'In progress', chapters: 6 },
   { id: 2, title: 'Glass Horizon', genre: 'Sci-fi', summary: 'A drifting deep-space pilot returns to a collapsing colony world.', status: 'Draft', chapters: 3 },
@@ -84,5 +87,11 @@ p {
   justify-content: center;
   gap: 8px;
   color: #cbd5e1;
+}
+
+.detail-link {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: 600;
 }
 </style>
