@@ -1,42 +1,45 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
-	"os"
+
+	"github.com/gin-gonic/gin"
 
 	"storycraft-ai/backend/config"
-)
+	"storycraft-ai/backend/internal/api/v1"
+	type Server struct {
+	Router *gin.Engine
+}
 
-type HealthResponse struct {
-	Status  string `json:"status"`
-	Service string `json:"service"`
+func NewServer() *Server {
+	cfg := config.Load()
+	_ = cfg
+
+	r := gin.Default()
+
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "ok",
+			"service": "storycraft-ai-backend",
+		})
+	})
+
+	e := v1.NewRouter()
+	r.Any("/api/v1/*path", func(c *gin.Context) {
+		if c.Request.Method == http.MethodOptions {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+		e.HandleContext(c)
+	})
+
+	return &Server{Router: r}
 }
 
 func main() {
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/api/v1/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		resp := HealthResponse{Status: "ok", Service: "storycraft-ai"}
-		if err := json.NewEncoder(w).Encode(resp); err != nil {
-			log.Printf("encode response failed: %v", err)
-		}
-	})
-
-	port := config.GetPort()
-	log.Printf("storycraft-ai backend listening on :%s", port)
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
-		log.Printf("server error: %v", err)
-		os.Exit(1)
+	cfg := config.Load()
+	server := NewServer()
+	if err := server.Router.Run(":" + cfg.Port); err != nil {
+		panic(err)
 	}
 }
