@@ -1,38 +1,33 @@
 package repository
 
 import (
-    "storycraft-ai/backend/internal/model"
+	"storycraft-ai/backend/internal/db"
+	"storycraft-ai/backend/internal/model"
 )
 
 type ProjectRepository struct{}
 
 func NewProjectRepository() *ProjectRepository {
-    return &ProjectRepository{}
+	return &ProjectRepository{}
 }
 
 func (r *ProjectRepository) List() ([]model.Project, error) {
-    return []model.Project{
-        {
-            ID:          1,
-            OwnerID:     1,
-            Title:       "Moonfall City",
-            Description: "A city suspended above a drowned world.",
-            Genre:       "fantasy",
-            Visibility:  "private",
-            Status:      "draft",
-        },
-        {
-            ID:          2,
-            OwnerID:     1,
-            Title:       "Glass Horizon",
-            Description: "A broken colony faced with impossible memory.",
-            Genre:       "scifi",
-            Visibility:  "team",
-            Status:      "in_progress",
-        },
-    }, nil
+	var projects []model.Project
+	if db.DB == nil {
+		return []model.Project{}, nil
+	}
+	if err := db.DB.Order("created_at desc").Find(&projects).Error; err != nil {
+		return nil, err
+	}
+	return projects, nil
 }
 
 func (r *ProjectRepository) Create(p model.Project) (model.Project, error) {
-    return p, nil
+	if db.DB == nil {
+		return p, nil
+	}
+	if err := db.DB.Create(&p).Error; err != nil {
+		return model.Project{}, err
+	}
+	return p, nil
 }
