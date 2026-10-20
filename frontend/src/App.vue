@@ -1,5 +1,5 @@
 <template>
-  <div class="app-shell">
+  <div>
     <aside class="sidebar">
       <div class="brand">StoryCraft AI</div>
       <nav>
@@ -7,6 +7,7 @@
         <RouterLink to="/projects">Projects</RouterLink>
         <RouterLink to="/studio">Writer Studio</RouterLink>
         <RouterLink to="/ai">AI Assistant</RouterLink>
+        <RouterLink to="/ai/workspace">AI Workspace</RouterLink>
         <RouterLink to="/login">Login</RouterLink>
       </nav>
     </aside>
@@ -29,14 +30,7 @@ import { RouterLink, RouterView } from 'vue-router'
   color: #e2e8f0;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-.app-shell {
-  display: flex;
-  min-height: 100vh;
-}
+* { box-sizing: border-box; }
 
 .sidebar {
   width: 260px;
