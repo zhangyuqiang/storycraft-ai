@@ -1,26 +1,29 @@
 <template>
   <div>
-    <h1>AI Assistant</h1>
+    <header class="header-row">
+      <h1>AI 助手</h1>
+      <button @click="generateStory">生成故事</button>
+    </header>
 
     <div class="ai-grid">
       <section class="panel">
-        <h3>Generate story outline</h3>
-        <textarea v-model="prompt" placeholder="Describe the story theme, genre, and key emotional tone" />
-        <button @click="generateStory">Generate</button>
+        <h3>生成故事大纲</h3>
+        <textarea v-model="prompt" placeholder="描述故事主题、类型和情绪基调" />
+        <button @click="generateStory" class="secondary">生成</button>
 
         <div v-if="result" class="result-box">
-          <h4>Result</h4>
+          <h4>生成结果</h4>
           <pre>{{ result }}</pre>
         </div>
       </section>
 
       <aside class="panel">
-        <h3>Prompt templates</h3>
+        <h3>提示词模板</h3>
         <ul>
-          <li>Fantasy romance</li>
-          <li>Post-apocalypse drama</li>
-          <li>Urban mystery</li>
-          <li>Counter-culture sci-fi</li>
+          <li>奇幻爱情</li>
+          <li>末日戏剧</li>
+          <li>都市悬疑</li>
+          <li>反乌托邦科幻</li>
         </ul>
       </aside>
     </div>
@@ -30,11 +33,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const prompt = ref('A young architect discovers a city beneath the sea and has to choose between love and duty.')
+const prompt = ref('一位年轻建筑师发现海底之下沉睡着一座失落城市，他必须在爱与职责之间做出抉择。')
 const result = ref('')
 
 async function generateStory() {
-  result.value = `Story outline generated from prompt: ${prompt.value}\n\n- Title: Deep Sea Memory\n- Genre: Fantasy Drama\n- Arc: A vanished city, a hidden identity, and a final choice.`
+  result.value = `故事大纲已生成：\n\n- 标题：深海记忆\n- 类型：奇幻剧情\n- 主线：失落城市、隐藏身份与最终选择。`
 }
 </script>
 
@@ -73,6 +76,10 @@ button {
   color: white;
   font-weight: 600;
   cursor: pointer;
+}
+
+.secondary {
+  margin-top: 8px;
 }
 
 ul {

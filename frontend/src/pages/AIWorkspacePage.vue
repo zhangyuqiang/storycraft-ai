@@ -1,40 +1,40 @@
 <template>
   <div>
     <header class="header-row">
-      <h1>AI Workspace</h1>
-      <button @click="createStoryJob">Generate story</button>
+      <h1>AI 工作台</h1>
+      <button @click="createStoryJob">生成故事</button>
     </header>
 
     <div class="grid">
       <section class="panel">
-        <h3>Story prompt</h3>
-        <textarea v-model="storyPrompt" placeholder="Describe the world, core conflict, genre, and emotional tone." />
+        <h3>故事提示词</h3>
+        <textarea v-model="storyPrompt" placeholder="描述世界观、核心冲突和情绪基调" />
 
         <div class="field-row">
           <label>
-            Genre
+            类型
             <select v-model="genre">
-              <option value="fantasy">Fantasy</option>
-              <option value="sci-fi">Sci-fi</option>
-              <option value="romance">Romance</option>
-              <option value="drama">Drama</option>
+              <option value="fantasy">奇幻</option>
+              <option value="sci-fi">科幻</option>
+              <option value="romance">爱情</option>
+              <option value="drama">剧情</option>
             </select>
           </label>
 
           <label>
-            Tone
+            氛围
             <select v-model="tone">
-              <option value="epic">Epic</option>
-              <option value="mysterious">Mysterious</option>
-              <option value="emotional">Emotional</option>
-              <option value="cinematic">Cinematic</option>
+              <option value="epic">史诗</option>
+              <option value="mysterious">神秘</option>
+              <option value="emotional">感伤</option>
+              <option value="cinematic">电影感</option>
             </select>
           </label>
         </div>
       </section>
 
       <aside class="panel">
-        <h3>Task status</h3>
+        <h3>任务状态</h3>
         <ul class="status-list">
           <li v-for="task in tasks" :key="task.id">
             <span>{{ task.name }}</span>
@@ -45,7 +45,7 @@
     </div>
 
     <section class="panel result-panel" v-if="resultText">
-      <h3>Result</h3>
+      <h3>生成结果</h3>
       <pre>{{ resultText }}</pre>
     </section>
   </div>
@@ -55,15 +55,15 @@
 import { ref } from 'vue'
 import { generateStory } from '../api/client'
 
-const storyPrompt = ref('A city beneath the sea, a hidden oracle, and a power that awakens only when the tide turns.')
+const storyPrompt = ref('一座海底之城，沉睡的神谕，以及只有潮汐涨落时才会被唤醒的力量。')
 const genre = ref('fantasy')
 const tone = ref('epic')
 const resultText = ref('')
 
 const tasks = ref([
-  { id: 1, name: 'Story outline', status: 'done' },
-  { id: 2, name: 'Shot generation', status: 'running' },
-  { id: 3, name: 'Video generation', status: 'pending' },
+  { id: 1, name: '故事大纲', status: 'done' },
+  { id: 2, name: '分镜生成', status: 'running' },
+  { id: 3, name: '视频生成', status: 'pending' },
 ])
 
 async function createStoryJob() {
@@ -77,7 +77,7 @@ async function createStoryJob() {
     const data = res?.data ?? res
     resultText.value = JSON.stringify(data, null, 2)
   } catch (err) {
-    resultText.value = `Error: ${err instanceof Error ? err.message : 'failed to generate story'}`
+    resultText.value = `错误: ${err instanceof Error ? err.message : '生成失败'}`
   }
 }
 </script>

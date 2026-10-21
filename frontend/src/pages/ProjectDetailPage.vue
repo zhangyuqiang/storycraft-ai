@@ -2,34 +2,34 @@
   <div>
     <header class="header-row">
       <div>
-        <span class="eyebrow">Project detail</span>
-        <h1>Moonfall City</h1>
+        <span class="eyebrow">项目详情</span>
+        <h1>月落之城</h1>
       </div>
-      <button>Publish</button>
+      <button>发布</button>
     </header>
 
     <section class="summary-grid">
       <article class="panel wide">
-        <h3>Story overview</h3>
+        <h3>故事概述</h3>
         <p>
-          A suspended city hangs above a drowned world. A guardian with a stolen memory is forced to awaken the hidden tide engine before the sea reaches the last living district.
+          一座悬浮在海上的城市，守护者藏着失落的记忆，必须在海侵到最后一座居民区之前唤醒被封印的潮汐引擎。
         </p>
       </article>
 
       <article class="panel small">
-        <h3>Metadata</h3>
+        <h3>项目属性</h3>
         <ul>
-          <li><span>Genre</span><strong>Fantasy</strong></li>
-          <li><span>Status</span><strong>In progress</strong></li>
-          <li><span>Chapters</span><strong>6</strong></li>
-          <li><span>AI jobs</span><strong>12</strong></li>
+          <li><span>类型</span><strong>奇幻</strong></li>
+          <li><span>状态</span><strong>进行中</strong></li>
+          <li><span>章节</span><strong>6</strong></li>
+          <li><span>AI 任务</span><strong>12</strong></li>
         </ul>
       </article>
     </section>
 
     <section class="split-grid">
       <article class="panel">
-        <h3>Chapter list</h3>
+        <h3>章节列表</h3>
         <div class="chapter-list">
           <div v-for="chapter in chapters" :key="chapter.id" class="chapter-item">
             <div>
@@ -42,9 +42,9 @@
       </article>
 
       <article class="panel">
-        <h3>Current draft</h3>
+        <h3>当前草稿</h3>
         <textarea readonly>
-The old observatory is still lit. Beneath the tide, the city's last oracle turns toward the west, and for the first time in generations, a human voice answers.
+旧天文台仍然亮着灯。潮汐下的城市最后一位预言者转头望向西方，数百年后，人类第一次回应了它的呼唤。
         </textarea>
       </article>
     </section>
@@ -53,9 +53,9 @@ The old observatory is still lit. Beneath the tide, the city's last oracle turns
 
 <script setup lang="ts">
 const chapters = [
-  { id: 1, title: 'Chapter 01 — The Drowning Gate', summary: 'The city begins to remember its original purpose.', status: 'ready' },
-  { id: 2, title: 'Chapter 02 — The Engine Below', summary: 'A hidden system wakes beneath the sea.', status: 'draft' },
-  { id: 3, title: 'Chapter 03 — The Last Oracle', summary: 'The guardian learns the truth behind the flood.', status: 'ready' },
+  { id: 1, title: '第 01 章 — 淹没之门', summary: '城市开始重新记起自己的原始职责。', status: 'ready' },
+  { id: 2, title: '第 02 章 — 海下引擎', summary: '一个隐藏的系统在海底悄然苏醒。', status: 'draft' },
+  { id: 3, title: '第 03 章 — 最后的预言者', summary: '守护者终于掌握了洪水背后的真相。', status: 'ready' },
 ]
 </script>
 

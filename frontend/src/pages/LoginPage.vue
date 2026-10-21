@@ -1,10 +1,10 @@
 <template>
   <div class="auth-shell">
     <div class="auth-card">
-      <h1>Sign in</h1>
-      <input v-model="email" type="email" placeholder="Email" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button @click="submit">Continue</button>
+      <h1>登录</h1>
+      <input v-model="email" type="email" placeholder="邮箱" />
+      <input v-model="password" type="password" placeholder="密码" />
+      <button @click="submit">继续</button>
     </div>
   </div>
 </template>

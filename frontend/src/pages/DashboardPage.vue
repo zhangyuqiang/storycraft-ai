@@ -1,27 +1,27 @@
 <template>
   <div>
     <header class="topbar">
-      <h1>Creative dashboard</h1>
-      <button>New project</button>
+      <h1>创意仪表盘</h1>
+      <button>新建项目</button>
     </header>
 
     <section class="cards">
       <div class="card primary">
-        <span class="eyebrow">Overview</span>
-        <h2>Storycraft AI workspace is ready</h2>
-        <p>Use this as the creative overview for your story, chapter, character, AI generation, and asset pipeline.</p>
+        <span class="eyebrow">概览</span>
+        <h2>StoryCraft AI 工作台已就绪</h2>
+        <p>在这里查看故事、章节、角色、AI 生成任务与素材产出流水线。</p>
       </div>
 
       <div class="card">
-        <span class="eyebrow">Projects</span>
-        <h3>12 active</h3>
-        <p>Includes script drafts, storyboard pages, and approved story arcs.</p>
+        <span class="eyebrow">项目</span>
+        <h3>12 个进行中</h3>
+        <p>包含剧本草稿、分镜板、已审核故事线与待推进剧情。</p>
       </div>
 
       <div class="card">
-        <span class="eyebrow">AI generation</span>
-        <h3>7 jobs</h3>
-        <p>Text-based story prompts and image generation sessions are in progress.</p>
+        <span class="eyebrow">AI 生成</span>
+        <h3>7 个任务</h3>
+        <p>文本生成、图像生成和视频生成任务正在处理或排队中。</p>
       </div>
     </section>
   </div>

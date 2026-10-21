@@ -1,23 +1,26 @@
 <template>
   <div>
-    <h1>Writer Studio</h1>
+    <header class="header-row">
+      <h1>写作工作室</h1>
+      <button>保存草稿</button>
+    </header>
 
     <div class="studio-grid">
       <section class="panel big">
         <div class="panel-header">
-          <span>Current Scene</span>
-          <button>Save draft</button>
+          <span>当前场景</span>
+          <button class="small">保存</button>
         </div>
-        <h3>Scene 08 — The Observatory</h3>
-        <textarea value="The old observatory watches the stormline above the dead sea. A familiar silhouette steps into the light." />
+        <h3>场景 08 — 天文台</h3>
+        <textarea value="旧天文台仍在守望风暴线之上，熟悉的身影缓缓步入光中。" />
       </section>
 
       <aside class="panel">
-        <h3>Scene list</h3>
+        <h3>场景列表</h3>
         <ul>
-          <li>01 — Awakening</li>
-          <li>02 — The Signal</li>
-          <li>03 — The Observatory</li>
+          <li>01 — 觉醒</li>
+          <li>02 — 信号</li>
+          <li>03 — 天文台</li>
         </ul>
       </aside>
     </div>
@@ -30,6 +33,13 @@
   border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 16px;
   padding: 20px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
 .studio-grid {
@@ -65,6 +75,10 @@ button {
   color: white;
   font-weight: 600;
   cursor: pointer;
+}
+
+.small {
+  padding: 8px 14px;
 }
 
 ul {
