@@ -53,6 +53,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { generateStory } from '../api/client'
 
 const storyPrompt = ref('A city beneath the sea, a hidden oracle, and a power that awakens only when the tide turns.')
 const genre = ref('fantasy')
@@ -65,8 +66,19 @@ const tasks = ref([
   { id: 3, name: 'Video generation', status: 'pending' },
 ])
 
-function createStoryJob() {
-  resultText.value = `Story outline generated:\n\nTitle: The City Beneath the Tide\nGenre: ${genre.value}\nTone: ${tone.value}\n\nSynopsis: A forgotten oracle wakes beneath the sea and points the realm toward an impossible truth.\nChapters: [The Drowning Gate, The Signal Beneath, The Last Tide, The Awakening].`
+async function createStoryJob() {
+  try {
+    const res = await generateStory({
+      topic: storyPrompt.value,
+      genre: genre.value,
+      tone: tone.value,
+    })
+
+    const data = res?.data ?? res
+    resultText.value = JSON.stringify(data, null, 2)
+  } catch (err) {
+    resultText.value = `Error: ${err instanceof Error ? err.message : 'failed to generate story'}`
+  }
 }
 </script>
 

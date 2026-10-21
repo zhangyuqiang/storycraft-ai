@@ -2,19 +2,22 @@
   <div>
     <header class="header-row">
       <h1>Projects</h1>
-      <button>+ Create project</button>
+      <button @click="createNewProject">+ Create project</button>
     </header>
 
-    <div class="list">
+    <div v-if="loading" class="empty">Loading projects...</div>
+    <div v-else-if="error" class="empty error">{{ error }}</div>
+
+    <div v-else class="list">
       <div v-for="project in projects" :key="project.id" class="project-card">
         <div>
           <div class="tag">{{ project.genre }}</div>
           <h3>{{ project.title }}</h3>
-          <p>{{ project.summary }}</p>
+          <p>{{ project.summary || project.description || 'No description yet.' }}</p>
         </div>
         <div class="meta">
           <span>{{ project.status }}</span>
-          <span>{{ project.chapters }} chapters</span>
+          <span>{{ project.chapters || 0 }} chapters</span>
           <RouterLink :to="`/projects/${project.id}`" class="detail-link">Open</RouterLink>
         </div>
       </div>
@@ -23,12 +26,43 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { createProject, fetchProjects, type Project } from '../api/client'
 
-const projects = [
-  { id: 1, title: 'Moonfall City', genre: 'Fantasy', summary: 'An exiled guardian is drawn into a forgotten eclipse prophecy.', status: 'In progress', chapters: 6 },
-  { id: 2, title: 'Glass Horizon', genre: 'Sci-fi', summary: 'A drifting deep-space pilot returns to a collapsing colony world.', status: 'Draft', chapters: 3 },
-]
+const projects = ref<Project[]>([])
+const loading = ref(true)
+const error = ref('')
+
+async function loadProjects() {
+  try {
+    loading.value = true
+    error.value = ''
+    projects.value = await fetchProjects()
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Unknown error'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function createNewProject() {
+  try {
+    await createProject({
+      title: 'New Project',
+      description: 'Created from the frontend workflow',
+      genre: 'fantasy',
+      visibility: 'private',
+    })
+    await loadProjects()
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Project creation failed'
+  }
+}
+
+onMounted(() => {
+  loadProjects()
+})
 </script>
 
 <style scoped>
@@ -93,5 +127,16 @@ p {
   color: #93c5fd;
   text-decoration: none;
   font-weight: 600;
+}
+
+.empty {
+  padding: 18px;
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 12px;
+}
+
+.error {
+  color: #fca5a5;
 }
 </style>
