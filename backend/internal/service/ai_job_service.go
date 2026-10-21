@@ -3,10 +3,12 @@ package service
 import (
     "encoding/json"
     "fmt"
+    "time"
+
     "storycraft-ai/backend/internal/dto"
     "storycraft-ai/backend/internal/model"
+    "storycraft-ai/backend/internal/pkg/ai"
     "storycraft-ai/backend/internal/repository"
-    "time"
 )
 
 type AIJobService struct {
@@ -54,5 +56,27 @@ func (s *AIJobService) BuildStatus(taskType, status string) map[string]any {
         "status":    status,
         "message":   fmt.Sprintf("AI task %s is %s", taskType, status),
         "updated_at": time.Now().UTC().Format(time.RFC3339),
+    }
+}
+
+func (s *AIJobService) BuildAssetResult(prompt, url, kind, provider, model string) ai.AssetResult {
+    return ai.AssetResult{
+        Prompt:     prompt,
+        URL:        url,
+        Kind:       kind,
+        Provider:   provider,
+        Model:      model,
+        GeneratedAt: time.Now(),
+    }
+}
+
+func (s *AIJobService) BuildStoryTask(topic, genre string) map[string]string {
+    return map[string]string{
+        "task":     "story_outline",
+        "topic":    topic,
+        "genre":    genre,
+        "provider": "llm",
+        "status":   string(ai.TaskPending),
+        "message":  fmt.Sprintf("Generating story outline for %s in %s", topic, genre),
     }
 }
