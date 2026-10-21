@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,6 +9,7 @@ import (
 	"storycraft-ai/backend/config"
 	"storycraft-ai/backend/internal/api/v1"
 	"storycraft-ai/backend/internal/db"
+	"storycraft-ai/backend/internal/middleware"
 )
 
 type Server struct {
@@ -19,6 +21,7 @@ func NewServer() *Server {
 	_ = cfg
 
 	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
 
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -42,7 +45,7 @@ func NewServer() *Server {
 func main() {
 	cfg := config.Load()
 	if err := db.Connect(); err != nil {
-		panic(err)
+		log.Printf("mysql connect failed: %v; continuing in fallback mode", err)
 	}
 
 	server := NewServer()

@@ -22,12 +22,16 @@ func Connect() error {
 	gormLogger := logger.Default.LogMode(logger.Info)
 	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{Logger: gormLogger, SkipDefaultTransaction: true})
 	if err != nil {
-		return err
+		log.Printf("mysql unavailable, continuing in offline mode: %v", err)
+		DB = nil
+		return nil
 	}
 
 	sqlDB, err := conn.DB()
 	if err != nil {
-		return err
+		log.Printf("mysql pool init failed, continuing in offline mode: %v", err)
+		DB = nil
+		return nil
 	}
 
 	sqlDB.SetMaxIdleConns(10)
@@ -42,7 +46,9 @@ func Connect() error {
 		&model.AITask{},
 		&model.AIResult{},
 	); err != nil {
-		return err
+		log.Printf("auto migrate failed, continuing in offline mode: %v", err)
+		DB = nil
+		return nil
 	}
 
 	DB = conn
