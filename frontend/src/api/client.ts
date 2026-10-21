@@ -8,12 +8,25 @@ export type Project = {
   chapters?: number
 }
 
+export type ProjectCreatePayload = {
+  title: string
+  description?: string
+  genre?: string
+  visibility?: string
+}
+
+export type ProjectUpdatePayload = {
+  title?: string
+  description?: string
+  genre?: string
+  visibility?: string
+  status?: string
+}
+
 export async function fetchProjects(): Promise<Project[]> {
   const res = await fetch('http://localhost:8080/api/v1/projects', {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
   })
 
   if (!res.ok) {
@@ -34,12 +47,10 @@ export async function fetchProjects(): Promise<Project[]> {
   }))
 }
 
-export async function createProject(payload: { title: string; description?: string; genre?: string; visibility?: string }) {
+export async function createProject(payload: ProjectCreatePayload) {
   const res = await fetch('http://localhost:8080/api/v1/projects', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
 
@@ -50,12 +61,24 @@ export async function createProject(payload: { title: string; description?: stri
   return res.json()
 }
 
+export async function updateProject(id: number, payload: ProjectUpdatePayload) {
+  const res = await fetch(`http://localhost:8080/api/v1/projects/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  if (!res.ok) {
+    throw new Error(`Failed to update project: ${res.status}`)
+  }
+
+  return res.json()
+}
+
 export async function generateStory(payload: { topic: string; genre: string; tone?: string }) {
   const res = await fetch('http://localhost:8080/api/v1/ai/story/generate', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
 
@@ -69,9 +92,7 @@ export async function generateStory(payload: { topic: string; genre: string; ton
 export async function generateShot(payload: { prompt: string; style?: string }) {
   const res = await fetch('http://localhost:8080/api/v1/ai/shot/generate', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
 

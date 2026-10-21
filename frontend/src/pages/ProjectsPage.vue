@@ -1,11 +1,11 @@
 <template>
   <div>
     <header class="header-row">
-      <h1>Projects</h1>
-      <button @click="createNewProject">+ Create project</button>
+      <h1>项目</h1>
+      <button @click="openCreateModal">+ 新建项目</button>
     </header>
 
-    <div v-if="loading" class="empty">Loading projects...</div>
+    <div v-if="loading" class="empty">加载中...</div>
     <div v-else-if="error" class="empty error">{{ error }}</div>
 
     <div v-else class="list">
@@ -13,12 +13,48 @@
         <div>
           <div class="tag">{{ project.genre }}</div>
           <h3>{{ project.title }}</h3>
-          <p>{{ project.summary || project.description || 'No description yet.' }}</p>
+          <p>{{ project.summary || project.description || '暂无描述' }}</p>
         </div>
         <div class="meta">
           <span>{{ project.status }}</span>
-          <span>{{ project.chapters || 0 }} chapters</span>
-          <RouterLink :to="`/projects/${project.id}`" class="detail-link">Open</RouterLink>
+          <span>{{ project.chapters || 0 }} 章</span>
+          <div class="actions">
+            <RouterLink :to="`/projects/${project.id}`" class="detail-link">打开</RouterLink>
+            <button class="small-button" @click="openEditModal(project)">编辑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showModal" class="modal-backdrop" @click.self="closeModal">
+      <div class="modal">
+        <h3>{{ editingProject ? '编辑项目' : '新建项目' }}</h3>
+
+        <label>
+          项目名称
+          <input v-model="form.title" placeholder="请输入项目名称" />
+        </label>
+
+        <label>
+          描述
+          <textarea v-model="form.description" placeholder="请输入项目简介" />
+        </label>
+
+        <label>
+          类型
+          <select v-model="form.genre">
+            <option value="fantasy">奇幻</option>
+            <option value="sci-fi">科幻</option>
+            <option value="romance">爱情</option>
+            <option value="drama">剧情</option>
+          </select>
+        </label>
+
+        <div class="modal-actions">
+          <button class="secondary" @click="closeModal">取消</button>
+          <button @click="submitProject" :disabled="!form.title.trim()">
+            {{ editingProject ? '保存修改' : '创建项目' }}
+          </button>
         </div>
       </div>
     </div>
@@ -28,11 +64,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { createProject, fetchProjects, type Project } from '../api/client'
+import { createProject, fetchProjects, updateProject, type Project } from '../api/client'
 
 const projects = ref<Project[]>([])
 const loading = ref(true)
 const error = ref('')
+const showModal = ref(false)
+const editingProject = ref<Project | null>(null)
+const form = ref({ title: '', description: '', genre: 'fantasy' })
 
 async function loadProjects() {
   try {
@@ -46,17 +85,54 @@ async function loadProjects() {
   }
 }
 
-async function createNewProject() {
+function openCreateModal() {
+  editingProject.value = null
+  form.value = { title: '', description: '', genre: 'fantasy' }
+  showModal.value = true
+}
+
+function openEditModal(project: Project) {
+  editingProject.value = project
+  form.value = {
+    title: project.title,
+    description: project.description || '',
+    genre: project.genre || 'fantasy',
+  }
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+  editingProject.value = null
+  form.value = { title: '', description: '', genre: 'fantasy' }
+}
+
+async function submitProject() {
+  if (!form.value.title.trim()) {
+    error.value = '项目名称不能为空'
+    return
+  }
+
   try {
-    await createProject({
-      title: 'New Project',
-      description: 'Created from the frontend workflow',
-      genre: 'fantasy',
-      visibility: 'private',
-    })
+    if (editingProject.value) {
+      await updateProject(editingProject.value.id, {
+        title: form.value.title.trim(),
+        description: form.value.description,
+        genre: form.value.genre,
+      })
+    } else {
+      await createProject({
+        title: form.value.title.trim(),
+        description: form.value.description,
+        genre: form.value.genre,
+        visibility: 'private',
+      })
+    }
+
+    closeModal()
     await loadProjects()
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Project creation failed'
+    error.value = err instanceof Error ? err.message : '保存失败'
   }
 }
 
@@ -83,6 +159,11 @@ button {
   color: white;
   font-weight: 600;
   cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .list {
@@ -123,10 +204,22 @@ p {
   color: #cbd5e1;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .detail-link {
   color: #93c5fd;
   text-decoration: none;
   font-weight: 600;
+}
+
+.small-button {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 8px;
 }
 
 .empty {
@@ -138,5 +231,58 @@ p {
 
 .error {
   color: #fca5a5;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal {
+  width: min(520px, 90vw);
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: #dbeafe;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.9);
+  color: #f8fafc;
+  padding: 10px 12px;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.secondary {
+  background: rgba(148, 163, 184, 0.12);
+  color: #e2e8f0;
 }
 </style>
